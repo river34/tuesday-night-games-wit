@@ -12,12 +12,14 @@ public class PlayerController : MonoBehaviour {
     bool isPointerDown = false, lastIsPointerDown = false;
     public float holdingTime = -1;
     float velocity = -1;
-    float originY;
+    float minX, maxX, minY;
     Vector3 position;
     IEnumerator coroutine;
 
     const float GRAVITY = 40;
     const float V0 = 100;
+	const float FORWARD_SPEED = 4;
+	const float BACKWARD_SPEED = -2;
 
 	void Awake()
 	{
@@ -35,7 +37,9 @@ public class PlayerController : MonoBehaviour {
 
     void Start()
     {
-        originY = transform.position.y;
+        minX = transform.position.x;
+        maxX = -minX;
+        minY = transform.position.y;
     }
 
     void Update()
@@ -56,9 +60,20 @@ public class PlayerController : MonoBehaviour {
 
         if (coroutine == null && lastIsPointerDown && !isPointerDown)
 		{
-            holdingTime = (Time.time - holdingTime > Time.deltaTime * 4) ? Time.deltaTime * 4 : Time.time - holdingTime;
+            holdingTime = (Time.time - holdingTime > Time.deltaTime * 3) ? Time.deltaTime * 3 : Time.time - holdingTime;
 			StartJumping();
 		}
+
+        if (coroutine == null)
+        {
+			position = transform.position;
+            position.x += BACKWARD_SPEED * Time.deltaTime;
+			if (position.x < minX)
+			{
+                position.x = minX;
+			}
+			transform.position = position;
+        }
     }
 
     void LateUpdate()
@@ -81,21 +96,43 @@ public class PlayerController : MonoBehaviour {
 
     IEnumerator Jumping()
     {
-        while(transform.position.y >= originY)
+        while(transform.position.y >= minY)
 		{
 			yield return new WaitForSeconds(Time.deltaTime);
             position = transform.position;
+            position.x += FORWARD_SPEED * Time.deltaTime;
+            if (position.x > maxX)
+            {
+                position.x = maxX;
+            }
 			position.y += velocity * Time.deltaTime;
 			velocity -= GRAVITY * Time.deltaTime;
             transform.position = position;
         }
 
-        position.y = originY;
+        position = transform.position;
+        position.y = minY;
         transform.position = position;
 		EndJumping();
 		holdingTime = -1;
         velocity = -1;
         coroutine = null;
+    }
+
+    void StopJumping()
+    {
+		position = transform.position;
+		position.y = minY;
+		transform.position = position;
+		EndJumping();
+		holdingTime = -1;
+		velocity = -1;
+
+        if (coroutine != null)
+		{
+			StopCoroutine(coroutine);
+			coroutine = null;
+        }
     }
 
 	void EndJumping()
@@ -130,8 +167,10 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (collision.CompareTag("Block"))
 		{
-            SoundManager.Instance.PauseVO();
+            // SoundManager.Instance.PauseVO();
+            VideoManager.Instance.PauseVO();
             StopWalking();
+            StopJumping();
 		}
 	}
 
@@ -139,7 +178,8 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (collision.CompareTag("Block"))
 		{
-            SoundManager.Instance.ResumeVO();
+			// SoundManager.Instance.ResumeVO();
+			VideoManager.Instance.ResumeVO();
             StartWalking();
 		}
 	}

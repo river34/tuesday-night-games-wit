@@ -10,9 +10,15 @@ public class Block : MonoBehaviour {
     [SerializeField]
     TextMesh text;
 
-    public bool CanMove = true;
+    [SerializeField]
+	float minX;
+
+	[SerializeField]
+    float maxX;
 
     float originX;
+
+    public bool CanMove = true;
 
     void OnEnable()
     {
@@ -22,6 +28,7 @@ public class Block : MonoBehaviour {
     void Start()
     {
         originX = transform.position.x;
+        transform.position = new Vector3(maxX, transform.position.y, transform.position.z);
     }
 
     void Update()
@@ -34,9 +41,16 @@ public class Block : MonoBehaviour {
 
     void MoveLeft()
     {
-        transform.position += Vector3.left * speed * Time.deltaTime;
+        if (transform.position.x > originX || transform.position.x < -originX)
+        {
+            transform.position += Vector3.left * speed * 1.5f * Time.deltaTime;
+        }
+        else
+        {
+            transform.position += Vector3.left * speed * Time.deltaTime;
+        }
 
-        if (transform.position.x < -originX)
+        if (transform.position.x < minX)
         {
             Destroy(gameObject);
         }

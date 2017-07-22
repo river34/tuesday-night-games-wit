@@ -1,13 +1,16 @@
 To Do
-- Interface to input mp3/mp4 and transcript (important)
-- moving landscape (visual)
-- character: when jump, move forward; when land, move backward (important)
-- randomize block size and color
-- when player lands on box, end a jump (important)
-- box appears at the right edge, move faster first, than slower when close to player, than faster exit the scene (important)
+- levels - when progress, change speed / holding time to make it more difficult
+- possible chrome plugin
 
 Done
 - load xml
 - transcript goes with mp3
 - word recognition
 - basic mechanism (jump, move, collision)
+- character: when jump, move forward; when land, move backward (important)
+- when player lands on box, end a jump (important)
+- box appears at the right edge, move faster first, than slower when close to player, than faster exit the scene (important)
+- show video in background (greyscale)
+- vignette (visual)
+- interface for input (youtube link) (important)
+- randomize block size and color
