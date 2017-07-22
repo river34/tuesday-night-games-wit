@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour {
     IEnumerator coroutine;
 
     const float GRAVITY = 40;
-    const float V0 = 100;
+    const float V0 = 200;
 	const float FORWARD_SPEED = 4;
 	const float BACKWARD_SPEED = -2;
 
